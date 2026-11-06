@@ -1,9 +1,19 @@
-import { contact, footer, nav } from '../content'
+import { useState, type MouseEvent } from 'react'
+import { contact, footer, mailFallback, nav } from '../content'
+import { attemptMail, type MailDraft } from '../email'
 import { useLang } from '../lang'
 import { Logo } from './Logo'
+import { MailFallback } from './MailFallback'
 
 export function Footer() {
   const { t } = useLang()
+  const [fallback, setFallback] = useState<MailDraft | null>(null)
+
+  const writeUs = (e: MouseEvent) => {
+    e.preventDefault()
+    const draft: MailDraft = { subject: t(mailFallback.subject) }
+    attemptMail(draft, { onFallback: () => setFallback(draft) })
+  }
 
   return (
     <footer className="footer">
@@ -26,7 +36,9 @@ export function Footer() {
 
         <div className="footer__contact">
           <a href={contact.phoneHref}>{contact.phoneLabel}</a>
-          <a href={`mailto:${contact.email}`}>{contact.email}</a>
+          <a href={`mailto:${contact.email}`} onClick={writeUs}>
+            {contact.email}
+          </a>
           <a href={contact.facebook} target="_blank" rel="noreferrer">
             Facebook ↗
           </a>
@@ -45,6 +57,8 @@ export function Footer() {
           ↑ {t(footer.backTop)}
         </a>
       </div>
+
+      {fallback && <MailFallback draft={fallback} onClose={() => setFallback(null)} />}
     </footer>
   )
 }

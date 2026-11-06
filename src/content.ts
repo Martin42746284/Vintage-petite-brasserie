@@ -445,6 +445,21 @@ export const footer = {
   backTop: { fr: 'Haut de page', en: 'Back to top' } satisfies L,
 }
 
+/* --------------------------------------------------- panneau mail de repli */
+
+export const mailFallback = {
+  title: { fr: 'Votre messagerie ne s’est pas ouverte', en: 'Your mail app didn’t open' } satisfies L,
+  body: {
+    fr: 'Aucune application de messagerie n’est détectée sur cet appareil. Ouvrez Gmail ou copiez notre adresse pour nous écrire.',
+    en: 'No mail app was detected on this device. Open Gmail or copy our address to write to us.',
+  } satisfies L,
+  gmail: { fr: 'Ouvrir Gmail', en: 'Open Gmail' } satisfies L,
+  copy: { fr: 'Copier l’adresse', en: 'Copy address' } satisfies L,
+  copied: { fr: 'Adresse copiée', en: 'Address copied' } satisfies L,
+  close: { fr: 'Fermer', en: 'Close' } satisfies L,
+  subject: { fr: 'Prise de contact', en: 'Getting in touch' } satisfies L,
+}
+
 /* ----------------------------------------------------------- état d'ouverture */
 
 export const openState = {

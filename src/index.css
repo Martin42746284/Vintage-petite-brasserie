@@ -268,6 +268,7 @@ button {
   padding: 1.05em 1.9em;
   border: 1px solid transparent;
   border-radius: var(--radius);
+  background: transparent; /* neutralise le fond gris des <button> (UA) */
   font-family: var(--font-ui);
   font-size: 0.76rem;
   font-weight: 400;
@@ -1962,6 +1963,85 @@ button {
   }
 }
 
+/* ------------------------------------------- panneau mail de repli */
+
+.mail-fallback {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  z-index: 120;
+  width: min(440px, calc(100vw - 2rem));
+  padding: 1.5rem 1.6rem 1.6rem;
+  transform: translateX(-50%);
+  background: var(--ink-2);
+  border: 1px solid var(--brass);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.85);
+  color: var(--text-light);
+  animation: mail-in 0.45s var(--ease);
+}
+
+@keyframes mail-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 18px);
+  }
+}
+
+.mail-fallback__close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(246, 239, 226, 0.6);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.3s var(--ease);
+}
+
+.mail-fallback__close:hover {
+  color: var(--cream);
+}
+
+.mail-fallback__title {
+  margin: 0;
+  padding-right: 2rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  color: var(--cream);
+}
+
+.mail-fallback__body {
+  margin: 0.7rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--muted-light);
+}
+
+.mail-fallback__address {
+  margin: 0.9rem 0 0;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  color: var(--brass);
+  overflow-wrap: anywhere;
+}
+
+.mail-fallback__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+
+.mail-fallback__actions .btn {
+  padding: 0.9em 1.5em;
+}
+
 /* --------------------------------------------------- mouvement réduit */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1978,7 +2058,8 @@ button {
   .marquee__track,
   .seal,
   .hero__scroll i::after,
-  .pill.is-on .pill__dot {
+  .pill.is-on .pill__dot,
+  .mail-fallback {
     animation: none;
   }
 

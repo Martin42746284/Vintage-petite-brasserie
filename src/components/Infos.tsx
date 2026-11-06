@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import { contact, infos } from '../content'
+import { contact, infos, mailFallback } from '../content'
+import { attemptMail, type MailDraft } from '../email'
 import { openLabel, useOpenStatus } from '../hooks'
 import { useLang } from '../lang'
+import { MailFallback } from './MailFallback'
 import { Reveal } from './Reveal'
 
 type Fields = {
@@ -20,6 +22,7 @@ export function Infos() {
   const status = useOpenStatus()
   const [fields, setFields] = useState<Fields>(INITIAL)
   const [sent, setSent] = useState(false)
+  const [fallback, setFallback] = useState<MailDraft | null>(null)
 
   const set = (key: keyof Fields) => (e: { target: { value: string } }) =>
     setFields((prev) => ({ ...prev, [key]: e.target.value }))
@@ -53,11 +56,12 @@ export function Infos() {
             fields.message,
           ]
 
-    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(
-      subject,
-    )}&body=${encodeURIComponent(lines.join('\n'))}`
+    const draft: MailDraft = { subject, body: lines.join('\n') }
 
-    setSent(true)
+    attemptMail(draft, {
+      onOpened: () => setSent(true),
+      onFallback: () => setFallback(draft),
+    })
   }
 
   return (
@@ -82,7 +86,20 @@ export function Infos() {
                   <dd>
                     <span>{t(item.v)}</span>
                     {item.note && <small>{t(item.note)}</small>}
-                    <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
+                    <a
+                      href={item.href}
+                      target={item.href.startsWith('http') ? '_blank' : undefined}
+                      rel="noreferrer"
+                      onClick={
+                        item.href.startsWith('mailto:')
+                          ? (e) => {
+                              e.preventDefault()
+                              const draft: MailDraft = { subject: t(mailFallback.subject) }
+                              attemptMail(draft, { onFallback: () => setFallback(draft) })
+                            }
+                          : undefined
+                      }
+                    >
                       {t(item.link)}
                     </a>
                   </dd>
@@ -193,6 +210,8 @@ export function Infos() {
           </div>
         </Reveal>
       </div>
+
+      {fallback && <MailFallback draft={fallback} onClose={() => setFallback(null)} />}
     </section>
   )
 }
